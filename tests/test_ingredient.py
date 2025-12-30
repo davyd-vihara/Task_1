@@ -66,3 +66,7 @@ class TestIngredient:
         assert ingredient.get_price() == price
         assert isinstance(ingredient.get_price(), (int, float))
 
+
+
+
+
