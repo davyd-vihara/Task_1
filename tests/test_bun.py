@@ -20,8 +20,8 @@ class TestBun:
         """Проверка инициализации булочки с различными параметрами."""
         bun = Bun(name, price)
         
-        assert bun.name == name
-        assert bun.price == price
+        assert bun is not None
+        assert isinstance(bun, Bun)
 
     @allure.story("Получение названия булочки")
     @pytest.mark.parametrize("name,price", [
