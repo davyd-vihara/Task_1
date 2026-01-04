@@ -7,33 +7,33 @@ from praktikum.ingredient import Ingredient
 from praktikum.ingredient_types import INGREDIENT_TYPE_SAUCE, INGREDIENT_TYPE_FILLING
 
 
+def create_test_ingredients():
+    """Создает стандартный набор тестовых ингредиентов."""
+    return (
+        Ingredient(INGREDIENT_TYPE_SAUCE, "hot sauce", 100),
+        Ingredient(INGREDIENT_TYPE_FILLING, "cutlet", 200),
+        Ingredient(INGREDIENT_TYPE_SAUCE, "sour cream", 150),
+    )
+
+
+def create_burger_with_ingredients():
+    """Создает бургер с булочкой и двумя ингредиентами для тестов."""
+    burger = Burger()
+    bun = Bun("black bun", 100)
+    ingredient1 = Ingredient(INGREDIENT_TYPE_SAUCE, "hot sauce", 100)
+    ingredient2 = Ingredient(INGREDIENT_TYPE_FILLING, "cutlet", 200)
+    
+    burger.set_buns(bun)
+    burger.add_ingredient(ingredient1)
+    burger.add_ingredient(ingredient2)
+    
+    return burger
+
+
 @allure.epic("Stellar Burgers")
 @allure.feature("Burger")
 class TestBurger:
     """Тесты для класса Burger."""
-
-    @staticmethod
-    def _create_test_ingredients():
-        """Создает стандартный набор тестовых ингредиентов."""
-        return (
-            Ingredient(INGREDIENT_TYPE_SAUCE, "hot sauce", 100),
-            Ingredient(INGREDIENT_TYPE_FILLING, "cutlet", 200),
-            Ingredient(INGREDIENT_TYPE_SAUCE, "sour cream", 150),
-        )
-
-    @staticmethod
-    def _create_burger_with_ingredients():
-        """Создает бургер с булочкой и двумя ингредиентами для тестов."""
-        burger = Burger()
-        bun = Bun("black bun", 100)
-        ingredient1 = Ingredient(INGREDIENT_TYPE_SAUCE, "hot sauce", 100)
-        ingredient2 = Ingredient(INGREDIENT_TYPE_FILLING, "cutlet", 200)
-        
-        burger.set_buns(bun)
-        burger.add_ingredient(ingredient1)
-        burger.add_ingredient(ingredient2)
-        
-        return burger
 
     @allure.story("Инициализация бургера")
     def test_burger_initialization(self):
@@ -82,7 +82,7 @@ class TestBurger:
     def test_add_multiple_ingredients(self):
         """Проверка добавления нескольких ингредиентов."""
         burger = Burger()
-        ingredient1, ingredient2, ingredient3 = self._create_test_ingredients()
+        ingredient1, ingredient2, ingredient3 = create_test_ingredients()
         
         burger.add_ingredient(ingredient1)
         burger.add_ingredient(ingredient2)
@@ -97,7 +97,7 @@ class TestBurger:
     def test_remove_ingredient(self):
         """Проверка удаления ингредиента по индексу."""
         burger = Burger()
-        ingredient1, ingredient2, ingredient3 = self._create_test_ingredients()
+        ingredient1, ingredient2, ingredient3 = create_test_ingredients()
         
         burger.add_ingredient(ingredient1)
         burger.add_ingredient(ingredient2)
@@ -118,7 +118,7 @@ class TestBurger:
     def test_move_ingredient(self, index, new_index, expected_order):
         """Проверка перемещения ингредиента в бургере."""
         burger = Burger()
-        ingredient0, ingredient1, ingredient2 = self._create_test_ingredients()
+        ingredient0, ingredient1, ingredient2 = create_test_ingredients()
         
         burger.add_ingredient(ingredient0)
         burger.add_ingredient(ingredient1)
@@ -167,7 +167,7 @@ class TestBurger:
     @allure.story("Расчет цены бургера с реальными объектами")
     def test_get_price_with_real_objects(self):
         """Проверка расчета цены бургера с реальными объектами."""
-        burger = self._create_burger_with_ingredients()
+        burger = create_burger_with_ingredients()
         
         expected_price = 100 * 2 + 100 + 200  # 500
         assert burger.get_price() == expected_price
@@ -175,7 +175,7 @@ class TestBurger:
     @allure.story("Получение чека")
     def test_get_receipt(self):
         """Проверка формирования чека бургера."""
-        burger = self._create_burger_with_ingredients()
+        burger = create_burger_with_ingredients()
         
         receipt = burger.get_receipt()
         
