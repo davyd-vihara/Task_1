@@ -25,6 +25,7 @@ Task_1/
 │
 ├── tests/                  # Пакет с тестами
 │   ├── __init__.py
+│   ├── conftest.py         # Фикстуры pytest для тестов
 │   ├── test_bun.py         # Тесты для Bun (17 тестов)
 │   ├── test_ingredient.py  # Тесты для Ingredient (18 тестов)
 │   ├── test_burger.py      # Тесты для Burger (19 тестов)
@@ -70,7 +71,7 @@ Task_1/
 - ✅ Формирование чека с моками ⭐
 - **Моки:** Используются для изоляции тестов (Bun, Ingredient)
 - **Параметризация:** Используется в 4 тестах
-- **Вспомогательные функции:** Вынесены на уровень модуля (не в классе тестов)
+- **Фикстуры:** Используются для создания тестовых данных (test_ingredients, burger_with_ingredients)
 
 ### 4. **Database** (База данных) - `test_database.py`
 - ✅ Инициализация с данными по умолчанию
@@ -158,6 +159,32 @@ def test_get_name(self, name):
 
 ---
 
+## 🔧 Использование фикстур pytest
+
+Фикстуры используются для создания переиспользуемых тестовых данных и вынесены в `conftest.py`:
+
+| Фикстура | Описание | Используется в |
+|----------|----------|----------------|
+| `test_ingredients` | Создает стандартный набор из 3 тестовых ингредиентов | `test_add_multiple_ingredients`, `test_remove_ingredient`, `test_move_ingredient` |
+| `burger_with_ingredients` | Создает бургер с булочкой и двумя ингредиентами | `test_get_price_with_real_objects`, `test_get_receipt` |
+
+**Зачем фикстуры?**
+- Переиспользование тестовых данных
+- Изоляция создания тестовых объектов
+- Соответствие стандартам pytest
+- Улучшение читаемости и поддерживаемости тестов
+
+**Пример использования:**
+```python
+def test_get_receipt(self, burger_with_ingredients):
+    """Проверка формирования чека бургера."""
+    burger = burger_with_ingredients
+    receipt = burger.get_receipt()
+    assert isinstance(receipt, str)
+```
+
+---
+
 ## 🏷️ Allure разметка
 
 Все тесты помечены декораторами Allure для структурированных отчетов:
@@ -227,6 +254,28 @@ pytest --cov=praktikum --cov-report=html
 pytest --cov=praktikum --cov-report=html --alluredir=allure-results
 ```
 
+### Запуск с очисткой Allure отчетов и генерацией новых
+
+**Windows PowerShell:**
+```powershell
+if (Test-Path allure-results) { Remove-Item -Recurse -Force allure-results }; pytest --cov=praktikum --cov-report=html --alluredir=allure-results
+```
+
+**Windows CMD:**
+```cmd
+if exist allure-results rmdir /s /q allure-results && pytest --cov=praktikum --cov-report=html --alluredir=allure-results
+```
+
+**Linux/macOS:**
+```bash
+rm -rf allure-results && pytest --cov=praktikum --cov-report=html --alluredir=allure-results
+```
+
+После выполнения команды для просмотра Allure отчета выполните:
+```bash
+allure serve allure-results
+```
+
 ### Запуск конкретного файла тестов
 
 ```bash
@@ -276,7 +325,7 @@ pytest -q
    - Изоляция параметров (при тестировании одного параметра остальные фиксированы)
 4. **Тестирование методов:** Тесты проверяют публичные методы, а не атрибуты
 5. **Разделение тестов:** Методы тестируются отдельно, каждый тест проверяет один аспект
-6. **Вспомогательные функции:** Вынесены на уровень модуля, не находятся в классе тестов
+6. **Фикстуры pytest:** Вспомогательные функции вынесены в `conftest.py` как фикстуры для переиспользования
 7. **Покрытие кода:** Достигнуто 100% покрытие всех классов и методов
 8. **Allure разметка:** Все тесты структурированы с помощью Allure для удобных отчетов
 
